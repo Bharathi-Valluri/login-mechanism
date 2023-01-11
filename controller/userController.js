@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
 const prisma = new PrismaClient()
 const nodemailer = require('nodemailer')
-const session = require('express-session')
+
 const { appConst } = require('../router/constants')
 
 // saving the login credentials into DB
@@ -109,32 +109,29 @@ const sendingMail = async (req, res) => {
       }
     })
     if (findUser) {
-      user.forgettoken = jwt.sign(
-        { email: findUser.email },
-        process.env.SecretKey
-      )
+      user.token = jwt.sign({ email: findUser.email }, process.env.SecretKey)
 
       const resp = await prisma.user.update({
         where: {
           email: String(user.email)
         },
         data: {
-          forgettoken: user.forgettoken
+          token: user.token
         }
       })
       const findMail = await prisma.user.findFirst({
         where: {
           email: String(user.email),
-          forgettoken: String(user.forgettoken)
+          token: String(user.token)
         }
       })
       if (findMail) {
         let transporter = nodemailer.createTransport({
-          host: 'smtp.mailtrap.io',
-          port: 2525,
-          auth: {
-            user: 'ad7fb6ca913baa',
-            pass: '87bc1cfd769d78'
+          Host: 'smtp.mailtrap.io',
+          Port: 2525,
+          Auth: {
+            Username: '147bdc9fc3f795',
+            Password: 'dc70bf6ac18979'
           }
         })
         let mailOptions = {
@@ -144,7 +141,7 @@ const sendingMail = async (req, res) => {
           text: 'Reset your password',
           html: `<h2>Hi,</h2>
             <h4> please click the below link to Reset password</h4>
-            <a href="">http://localhost:${process.env.PORT}/resetpswd/${user.forgettoken}</a>`
+            <a href="">http://localhost:${process.env.PORT}/resetpswd/${user.token}</a>`
         }
         transporter.sendMail(mailOptions, (err, info) => {
           if (err) {
