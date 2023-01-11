@@ -141,7 +141,7 @@ const sendingMail = async (req, res) => {
           text: 'Reset your password',
           html: `<h2>Hi,</h2>
             <h4> please click the below link to Reset password</h4>
-            <a href="">http://localhost:${process.env.PORT}/resetpswd/${user.token}</a>`
+            <a href="">http://localhost:${process.env.PORT}/resetpassword/${user.token}</a>`
         }
         transporter.sendMail(mailOptions, (err, info) => {
           if (err) {
