@@ -1,6 +1,7 @@
 const appConst = {
   status: {
     success: 'login credentials saved successfully',
+    login_success: 'Log in successfully',
     fail: 'failed',
     mail_sent: 'mail sent successfully',
     invalidRequest: 'Invalid request',
